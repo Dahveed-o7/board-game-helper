@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+header {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 10px;
+}
+
+nav {
+  display: flex;
+  gap: 10px;
+}

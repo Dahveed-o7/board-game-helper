@@ -1,0 +1,77 @@
+@if (saveSlot$ | async) {
+<form *ngIf="saveForm" [formGroup]="saveForm">
+  <label for="saveName">Save file name</label>
+  <input type="text" id="saveName" [formControl]="saveForm.controls.name" />
+
+  <fieldset>
+    <legend>Vault</legend>
+    <app-galzyr-card-list
+      [cardArray]="saveForm.controls.vault.controls.cards"
+    />
+  </fieldset>
+
+  <fieldset>
+    <legend>Global</legend>
+    <app-galzyr-card-list
+      [cardArray]="saveForm.controls.global.controls.cards"
+    />
+  </fieldset>
+
+  <fieldset>
+    <legend>Quests</legend>
+    <app-galzyr-card-list
+      [cardArray]="saveForm.controls.quests.controls.cards"
+    />
+  </fieldset>
+
+  <fieldset>
+    <legend>Events</legend>
+    <app-galzyr-card-list
+      [cardArray]="saveForm.controls.events.controls.cards"
+    />
+  </fieldset>
+
+  <fieldset>
+    <legend>Characters</legend>
+
+    <fieldset>
+      <legend>Bumir</legend>
+      <app-galzyr-card-list
+        [cardArray]="
+          saveForm.controls.playerSlots.controls.bumir.controls.cards
+        "
+      />
+    </fieldset>
+
+    <fieldset>
+      <legend>Mor</legend>
+      <app-galzyr-card-list
+        [cardArray]="saveForm.controls.playerSlots.controls.mor.controls.cards"
+      />
+    </fieldset>
+
+    <fieldset>
+      <legend>Aysala</legend>
+      <app-galzyr-card-list
+        [cardArray]="
+          saveForm.controls.playerSlots.controls.aysala.controls.cards
+        "
+      />
+    </fieldset>
+
+    <fieldset>
+      <legend>Keridai</legend>
+      <app-galzyr-card-list
+        [cardArray]="
+          saveForm.controls.playerSlots.controls.keridai.controls.cards
+        "
+      />
+    </fieldset>
+  </fieldset>
+</form>
+<code>
+  <pre>{{ saveForm?.value | json }}</pre>
+</code>
+} @else {
+<p>Loading data...</p>
+}
