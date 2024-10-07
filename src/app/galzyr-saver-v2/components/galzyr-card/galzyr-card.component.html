@@ -1,0 +1,22 @@
+@if (editeMode()) {
+<fieldset [formGroup]="cardForm" class="galzyr-card">
+  <label for="name"></label>
+  <input type="text" id="name" [formControl]="cardForm.controls.name" />
+
+  <label for="cardNo">Card Number</label>
+  <input type="text" id="cardNo" [formControl]="cardForm.controls.cardNo" />
+
+  <label for="notes">Notes</label>
+  <input type="text" id="notes" [formControl]="cardForm.controls.notes" />
+</fieldset>
+} @else {
+<section>
+  <header>
+    <h3>{{ name }}</h3>
+  </header>
+  <div class="galzyr-card-details">
+    <p>{{ notes }}</p>
+    <span>{{ cardNo }}</span>
+  </div>
+</section>
+}
