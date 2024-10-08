@@ -1,0 +1,20 @@
+<fieldset [formGroup]="skillsRecord">
+  @for (key of skills(); track $index) {
+  <label>
+    <input
+      type="checkbox"
+      [id]="name() + key + 'basic'"
+      [formControl]="skillsRecord.controls[key].controls.basic"
+    />
+    basic
+  </label>
+  <label>
+    <input
+      type="checkbox"
+      [id]="name() + key + 'advanced'"
+      [formControl]="skillsRecord.controls[key].controls.advanced"
+    />
+    advanced
+  </label>
+  }
+</fieldset>

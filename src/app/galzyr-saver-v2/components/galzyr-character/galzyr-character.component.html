@@ -1,0 +1,20 @@
+@if (characterForm?.controls; as controls) {
+<fieldset [formGroupName]="controlKey()">
+  <legend>{{ name() }}</legend>
+
+  <label for="name">Player name</label>
+  <input type="text" id="name" [formControl]="controls.playerName" />
+
+  <label for="skills">Skills</label>
+  <app-galzyr-character-stats [formControl]="controls.stats" [name]="name()" />;
+
+  <label for="money">Money</label>
+  <input type="number" id="money" [formControl]="controls.money" />
+
+  <app-galzyr-slot
+    controlKey="cards"
+    label="Cards"
+    [initialCards]="initialCards()"
+  />
+</fieldset>
+}
