@@ -59,12 +59,16 @@ export class IDBService {
       .objectStore(storeName);
   }
 
-  create<T>(store: BGH_DB_STORE, item: T) {
-    this.#getObjectStore(store, 'readwrite').add(item);
+  create<T>(store: BGH_DB_STORE, item: T): Promise<boolean> {
+    return new Promise<boolean>((resolve, _reject) => {
+      const request = this.#getObjectStore(store, 'readwrite').add(item);
+
+      request.onsuccess = () => resolve(true);
+    });
   }
 
   read<T>(store: BGH_DB_STORE, key: string): Promise<T> {
-    return new Promise<T>((resolve) => {
+    return new Promise<T>((resolve, _reject) => {
       const request = this.#db
         .transaction(store, 'readonly')
         .objectStore(store)
@@ -74,12 +78,20 @@ export class IDBService {
     });
   }
 
-  update<T>(store: BGH_DB_STORE, data: T) {
-    this.#getObjectStore(store, 'readwrite').put(data);
+  update<T>(store: BGH_DB_STORE, data: T): Promise<boolean> {
+    return new Promise<boolean>((resolve, _reject) => {
+      const request = this.#getObjectStore(store, 'readwrite').put(data);
+
+      request.onsuccess = () => resolve(true);
+    });
   }
 
-  delete(store: BGH_DB_STORE, key: string) {
-    this.#getObjectStore(store, 'readwrite').delete(key);
+  delete(store: BGH_DB_STORE, key: string): Promise<boolean> {
+    return new Promise<boolean>((resolve, _reject) => {
+      const request = this.#getObjectStore(store, 'readwrite').delete(key);
+
+      request.onsuccess = () => resolve(true);
+    });
   }
 
   // todo: experiment

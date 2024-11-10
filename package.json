@@ -23,6 +23,8 @@
     "@angular/router": "^18.2.7",
     "@angular/service-worker": "18.2.7",
     "@angular/ssr": "^18.2.7",
+    "@ngrx/operators": "^18.1.1",
+    "@ngrx/signals": "^18.1.1",
     "express": "^4.18.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

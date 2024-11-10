@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { galzyrSaverRoutes } from './galzyr-saver-v2/routes/galzyr-save.routes';
 
 export const routes: Routes = [
   {
@@ -35,10 +36,11 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () =>
-              import('./galzyr-saver-v2/galzyr-saver-v2.component').then(
-                (m) => m.GalzyrSaverV2Component
-              ),
+            // loadComponent: () =>
+            //   import('./galzyr-saver-v2/galzyr-saver-v2.component').then(
+            //     (m) => m.GalzyrSaverV2Component
+            //   ),
+            children: galzyrSaverRoutes,
           },
         ],
       },

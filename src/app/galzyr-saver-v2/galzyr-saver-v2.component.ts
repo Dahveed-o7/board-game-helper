@@ -1,33 +1,26 @@
 import { JsonPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
   FormArray,
   FormControl,
   NonNullableFormBuilder,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {
-  GalzyrCardComponent,
-  GalzyrCardV2,
-} from './components/galzyr-card/galzyr-card.component';
-import { GalzyrSlotComponent } from './components/galzyr-slot/galzyr-slot.component';
-import { GalzyrCharacterComponent } from './components/galzyr-character/galzyr-character.component';
+import { RouterOutlet } from '@angular/router';
 import { BGH_DB_STORE, IDBService } from '../core/services/indexed-db.service';
+import { GalzyrCardV2 } from './components/galzyr-card/galzyr-card.component';
+import { GalzyrCharacterComponent } from './components/galzyr-character/galzyr-character.component';
+import { GalzyrSlotComponent } from './components/galzyr-slot/galzyr-slot.component';
 
 @Component({
   selector: 'app-galzyr-saver-v2',
   standalone: true,
   imports: [
-    GalzyrCardComponent,
     ReactiveFormsModule,
     JsonPipe,
     GalzyrSlotComponent,
     GalzyrCharacterComponent,
+    RouterOutlet,
   ],
   templateUrl: './galzyr-saver-v2.component.html',
   styleUrl: './galzyr-saver-v2.component.scss',
