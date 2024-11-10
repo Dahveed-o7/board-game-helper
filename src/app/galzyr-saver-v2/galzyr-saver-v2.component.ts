@@ -17,6 +17,7 @@ import {
 } from './components/galzyr-card/galzyr-card.component';
 import { GalzyrSlotComponent } from './components/galzyr-slot/galzyr-slot.component';
 import { GalzyrCharacterComponent } from './components/galzyr-character/galzyr-character.component';
+import { BGH_DB_STORE, IDBService } from '../core/services/indexed-db.service';
 
 @Component({
   selector: 'app-galzyr-saver-v2',
@@ -34,6 +35,7 @@ import { GalzyrCharacterComponent } from './components/galzyr-character/galzyr-c
 })
 export class GalzyrSaverV2Component {
   readonly #fb = inject(NonNullableFormBuilder);
+  readonly #db = inject(IDBService);
 
   readonly form = this.#fb.record<FormArray<FormControl<GalzyrCardV2>>>({});
 
@@ -47,4 +49,8 @@ export class GalzyrSaverV2Component {
   readonly cards: GalzyrCardV2[] = [
     { cardNo: '2', name: 'asd', notes: 'it be werking' },
   ];
+
+  onAddBtnClick(): void {
+    this.#db.create(BGH_DB_STORE.Galzyr, { asd: 'asd' });
+  }
 }
