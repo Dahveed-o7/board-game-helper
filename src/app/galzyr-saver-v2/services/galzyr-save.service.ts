@@ -17,6 +17,12 @@ export class GalzyrSaveService implements GameSaveService<Object & GameSave> {
     return from(this.#DBService.readList<GameSave>(BGH_DB_STORE.Galzyr));
   }
 
+  getGames(): Observable<(Object & GameSave)[]> {
+    return from(
+      this.#DBService.readAll<Object & GameSave>(BGH_DB_STORE.Galzyr)
+    );
+  }
+
   getSave(slug: string): Observable<Object & GameSave> {
     return from(
       this.#DBService.read<Object & GameSave>(BGH_DB_STORE.Galzyr, slug)

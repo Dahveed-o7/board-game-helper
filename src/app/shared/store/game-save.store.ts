@@ -1,4 +1,4 @@
-import { inject, ProviderToken } from '@angular/core';
+import { inject, InjectionToken, ProviderToken } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import {
@@ -17,9 +17,11 @@ type GameSaveState<T extends GameSave> = {
   gameSlug: string;
   game: T | undefined;
   isLoading: boolean;
+  isSaving: boolean;
+  isDeleting: boolean;
 };
 
-export const gameListStoreFactory = <
+export const gameStoreFactory = <
   T extends GameSave,
   SaveService extends GameSaveService<T>
 >(
@@ -28,7 +30,9 @@ export const gameListStoreFactory = <
   const initialState: GameSaveState<T> = {
     gameSlug: '',
     game: undefined,
-    isLoading: false,
+    isLoading: true,
+    isSaving: false,
+    isDeleting: false,
   };
 
   return signalStore(
@@ -51,6 +55,56 @@ export const gameListStoreFactory = <
           )
         )
       ),
+      createGame: rxMethod<T>(
+        pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          tap(() => patchState(store, { isSaving: true })),
+          switchMap((game) =>
+            saveService.createSave(game).pipe(
+              tapResponse({
+                next: (_res) => patchState(store, { game }),
+                error: (err) => console.log(err),
+                finalize: () => patchState(store, { isSaving: false }),
+              })
+            )
+          )
+        )
+      ),
+      saveGame: rxMethod<T>(
+        pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          tap(() => patchState(store, { isSaving: true })),
+          switchMap((game) =>
+            saveService.updateSave(game).pipe(
+              tapResponse({
+                next: (_res) => patchState(store, { game }),
+                error: (err) => console.log(err),
+                finalize: () => patchState(store, { isSaving: false }),
+              })
+            )
+          )
+        )
+      ),
+      deleteGame: rxMethod<string>(
+        pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          tap(() => patchState(store, { isDeleting: true })),
+          switchMap((key) =>
+            saveService.deleteSave(key).pipe(
+              tapResponse({
+                next: (_res) => patchState(store, { game: undefined }),
+                error: (err) => console.log(err),
+                finalize: () => patchState(store, { isDeleting: false }),
+              })
+            )
+          )
+        )
+      ),
     }))
   );
 };
+
+export type GameSaveStore = ReturnType<typeof gameStoreFactory>;

@@ -115,4 +115,16 @@ export class IDBService {
       };
     });
   }
+
+  readAll<T>(store: BGH_DB_STORE): Promise<T[]> {
+    return new Promise<T[]>((resolve) => {
+      const request = this.#db
+        .transaction(store, 'readonly')
+        .objectStore(store)
+        .getAll();
+
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => console.log(request.error);
+    });
+  }
 }
