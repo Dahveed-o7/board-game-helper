@@ -9,7 +9,10 @@ import {
 import { RouterOutlet } from '@angular/router';
 import { BGH_DB_STORE, IDBService } from '../core/services/indexed-db.service';
 import { GalzyrCardV2 } from './components/galzyr-card/galzyr-card.component';
-import { GalzyrCharacterComponent } from './components/galzyr-character/galzyr-character.component';
+import {
+  GalzyrCharacterComponent,
+  GalzyrCharacterSkills,
+} from './components/galzyr-character/galzyr-character.component';
 import { GalzyrSlotComponent } from './components/galzyr-slot/galzyr-slot.component';
 
 @Component({
@@ -47,3 +50,22 @@ export class GalzyrSaverV2Component {
     this.#db.create(BGH_DB_STORE.Galzyr, { asd: 'asd' });
   }
 }
+
+type GalzyrGameSave = {
+  name: string;
+  slug: string;
+  quests: GalzyrCardV2[];
+  events: GalzyrCardV2[];
+  vault: GalzyrCardV2[];
+  world: GalzyrCardV2[];
+} & {
+  [character: string]: GalzyrCharacterSheetV2;
+};
+
+type GalzyrCharacterSheetV2 = {
+  cards: GalzyrCardV2[];
+  name: string;
+  playerName: string;
+  money: number;
+  stats: GalzyrCharacterSkills;
+};

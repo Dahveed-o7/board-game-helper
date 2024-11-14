@@ -5,7 +5,7 @@ import {
   IDBService,
 } from '../../core/services/indexed-db.service';
 import { from, Observable } from 'rxjs';
-import { GameSaveService } from '../../shared/interfaces/game-save.interfaces';
+import { GameSaveService } from '../../shared/abstract/game-save';
 
 @Injectable({
   providedIn: 'root',

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { GameSaveStore } from '../../../shared/store/game-save.store';
 
 @Component({
   selector: 'app-galzyr-save-game-page',
