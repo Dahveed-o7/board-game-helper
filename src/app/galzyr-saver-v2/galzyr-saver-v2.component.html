@@ -1,4 +1,9 @@
 <router-outlet></router-outlet>
+<ul>
+  @for (item of store.gameEntities(); track $index) {
+  <li>galzyr save {{ item.name }}</li>
+  }
+</ul>
 <button (click)="onAddBtnClick()">test</button>
 
 <form [formGroup]="form">

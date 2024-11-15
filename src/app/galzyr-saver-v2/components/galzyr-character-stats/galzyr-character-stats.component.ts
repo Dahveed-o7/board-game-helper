@@ -17,14 +17,14 @@ import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import {
-  defaultSkills,
   GalzyrCharacterSkillName,
   GalzyrCharacterSkills,
   GalzyrCharacterStat,
   Skills,
-} from '../galzyr-character/galzyr-character.component';
-import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+} from '../../types/galzyr-game.type';
+import { defaultSkills } from '../../helpers/galzyr-save-helpers';
 
 @Component({
   selector: 'app-galzyr-character-stats',
@@ -108,7 +108,7 @@ export class GalzyrCharacterStatsComponent
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((val) => {
         //NOTE: stucturedClone ha egy konstanst több dolog is felhasználhat és önmagában módosítja az értékeit
-        const res: GalzyrCharacterSkills = structuredClone(defaultSkills);
+        const res: GalzyrCharacterSkills = defaultSkills();
         Object.keys(res).forEach((key) => {
           res[key as GalzyrCharacterSkillName] = this.mapObjectToStat(
             val?.[key]

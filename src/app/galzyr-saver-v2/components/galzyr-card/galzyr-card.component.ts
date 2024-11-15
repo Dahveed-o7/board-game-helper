@@ -14,12 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
-
-export type GalzyrCardV2 = {
-  readonly name: string;
-  readonly cardNo: string;
-  readonly notes: string;
-};
+import { GalzyrCardV2 } from '../../types/galzyr-game.type';
 
 @Component({
   selector: 'app-galzyr-card',

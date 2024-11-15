@@ -1,5 +1,10 @@
 import { JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+} from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -8,12 +13,13 @@ import {
 } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { BGH_DB_STORE, IDBService } from '../core/services/indexed-db.service';
-import { GalzyrCardV2 } from './components/galzyr-card/galzyr-card.component';
-import {
-  GalzyrCharacterComponent,
-  GalzyrCharacterSkills,
-} from './components/galzyr-character/galzyr-character.component';
+import { GalzyrCharacterComponent } from './components/galzyr-character/galzyr-character.component';
 import { GalzyrSlotComponent } from './components/galzyr-slot/galzyr-slot.component';
+import { GalzyrStore } from './store/galzyr-saver.store';
+import { GalzyrCardV2, GalzyrGameSave } from './types/galzyr-game.type';
+import { GameSaveService } from '../shared/abstract/game-save';
+import { GalzyrSaveService } from './services/galzyr-save.service';
+import galzyrGameSaveFactory from './helpers/galzyr-game-save.factory';
 
 @Component({
   selector: 'app-galzyr-saver-v2',
@@ -25,13 +31,17 @@ import { GalzyrSlotComponent } from './components/galzyr-slot/galzyr-slot.compon
     GalzyrCharacterComponent,
     RouterOutlet,
   ],
+  providers: [
+    GalzyrStore,
+    { provide: GameSaveService<GalzyrGameSave>, useClass: GalzyrSaveService },
+  ],
   templateUrl: './galzyr-saver-v2.component.html',
   styleUrl: './galzyr-saver-v2.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GalzyrSaverV2Component {
   readonly #fb = inject(NonNullableFormBuilder);
-  readonly #db = inject(IDBService);
+  readonly store = inject(GalzyrStore);
 
   readonly form = this.#fb.record<FormArray<FormControl<GalzyrCardV2>>>({});
 
@@ -46,26 +56,15 @@ export class GalzyrSaverV2Component {
     { cardNo: '2', name: 'asd', notes: 'it be werking' },
   ];
 
+  constructor() {
+    afterNextRender({
+      read: () => {
+        this.store.loadList();
+      },
+    });
+  }
+
   onAddBtnClick(): void {
-    this.#db.create(BGH_DB_STORE.Galzyr, { asd: 'asd' });
+    this.store.createSave(galzyrGameSaveFactory('test', 'test-slug'));
   }
 }
-
-type GalzyrGameSave = {
-  name: string;
-  slug: string;
-  quests: GalzyrCardV2[];
-  events: GalzyrCardV2[];
-  vault: GalzyrCardV2[];
-  world: GalzyrCardV2[];
-} & {
-  [character: string]: GalzyrCharacterSheetV2;
-};
-
-type GalzyrCharacterSheetV2 = {
-  cards: GalzyrCardV2[];
-  name: string;
-  playerName: string;
-  money: number;
-  stats: GalzyrCharacterSkills;
-};

@@ -1,7 +1,6 @@
 import { computed, inject, InjectionToken, ProviderToken } from '@angular/core';
 import {
   patchState,
-  signalState,
   signalStore,
   signalStoreFeature,
   type,
@@ -11,7 +10,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { debounceTime, pipe, switchMap, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, pipe, switchMap, tap } from 'rxjs';
 import { GameSave } from '../../core/services/indexed-db.service';
 import { GameSaveService } from '../abstract/game-save';
 import { tapResponse } from '@ngrx/operators';
@@ -150,17 +149,23 @@ export const gameStoreFactory = <T extends GameSave>() => {
 
   return signalStore(
     withEntities<T, 'game'>(gameSaveConfig),
-    withNamedStatus(['games', 'delete']),
+    withNamedStatus(['games', 'delete', 'save', 'create']),
     withSelectedGame<T>(),
     withMethods((store, saveService = inject(GameSaveService<T>)) => ({
-      _loadList: rxMethod<void>(
+      loadList: rxMethod<void>(
         pipe(
           tap(() => store.setLoading('games')),
           switchMap(() =>
             saveService.getGames().pipe(
               tapResponse({
                 next: (items) =>
-                  patchState(store, addEntities(items, { collection: 'game' })),
+                  patchState(
+                    store,
+                    addEntities(items, {
+                      collection: 'game',
+                      selectId: (game) => game.slug,
+                    })
+                  ),
                 error: (err) => console.log(err),
                 finalize: () => store.setLoaded('games'),
               })
@@ -168,7 +173,56 @@ export const gameStoreFactory = <T extends GameSave>() => {
           )
         )
       ),
-      deleteItem: rxMethod<string>(
+      createSave: rxMethod<T>(
+        pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          tap(() => store.setLoading('create')),
+          switchMap((game) => {
+            return saveService.createSave(game).pipe(
+              tapResponse({
+                next: (_res) =>
+                  patchState(
+                    store,
+                    addEntity(game, {
+                      collection: 'game',
+                      selectId: (entity) => entity.slug,
+                    })
+                  ),
+                error: (err) => console.log(err),
+                finalize: () => store.setLoaded('create'),
+              })
+            );
+          })
+        )
+      ),
+      saveGame: rxMethod<T>(
+        pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          tap(() => store.setLoading('save')),
+          switchMap((game) =>
+            saveService.updateSave(game).pipe(
+              tapResponse({
+                next: (_res) =>
+                  patchState(
+                    store,
+                    updateEntity(
+                      { changes: game, id: game.slug },
+                      {
+                        collection: 'game',
+                        selectId: (entity) => entity.slug,
+                      }
+                    )
+                  ),
+                error: (err) => console.log(err),
+                finalize: () => store.setLoaded('save'),
+              })
+            )
+          )
+        )
+      ),
+      deleteSave: rxMethod<string>(
         pipe(
           debounceTime(300),
           tap(() => store.setLoading('delete')),
@@ -184,11 +238,6 @@ export const gameStoreFactory = <T extends GameSave>() => {
           )
         )
       ),
-    })),
-    withHooks({
-      onInit(store) {
-        store._loadList();
-      },
-    })
+    }))
   );
 };

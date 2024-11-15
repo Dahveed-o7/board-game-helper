@@ -15,72 +15,14 @@ import {
   ReactiveFormsModule,
   ValidatorFn,
 } from '@angular/forms';
-import { GalzyrCardV2 } from '../galzyr-card/galzyr-card.component';
 import { GalzyrSlotComponent } from '../galzyr-slot/galzyr-slot.component';
 import { GalzyrCharacterStatsComponent } from '../galzyr-character-stats/galzyr-character-stats.component';
-
-export type GalzyrCharacterSkillName =
-  | Skills.MIGHT
-  | Skills.SURVIVAL
-  | Skills.KNOWLEDGE
-  | Skills.COMMUNICATION
-  | Skills.PERCEPTION
-  | Skills.THIEVERY;
-
-export enum Skills {
-  MIGHT = 'might',
-  SURVIVAL = 'survival',
-  KNOWLEDGE = 'knowledge',
-  COMMUNICATION = 'communication',
-  PERCEPTION = 'perception',
-  THIEVERY = 'thievery',
-}
-
-export type GalzyrCharacterSkills = Record<
-  GalzyrCharacterSkillName,
-  GalzyrCharacterStat
->;
-
-export const defaultSkills: GalzyrCharacterSkills = {
-  communication: 0,
-  knowledge: 0,
-  might: 0,
-  perception: 0,
-  survival: 0,
-  thievery: 0,
-};
-
-export type GalzyrCharacterNames = 'Bumir' | 'Aysala' | 'Mor' | 'Keridai';
-
-const characterSkilNames: Record<GalzyrCharacterSkillName, string> = {
-  communication: 'Communication',
-  knowledge: 'Knowledge',
-  might: 'Might',
-  perception: 'Perception',
-  survival: 'Survival',
-  thievery: 'Thievery',
-};
-
-export type GalzyrCharacterV2 = {
-  readonly name: string;
-  readonly playerName: string;
-  readonly money: number;
-  readonly stats: Record<GalzyrCharacterSkillName, GalzyrCharacterStat>;
-};
-
-export type GalzyrCharacterStat = 0 | 1 | 2;
-
-const isGalzyrCharacterSkills = (obj: any): obj is GalzyrCharacterSkills => {
-  const skills = obj as GalzyrCharacterSkills;
-  return (
-    skills.communication !== undefined &&
-    skills.knowledge !== undefined &&
-    skills.might !== undefined &&
-    skills.perception !== undefined &&
-    skills.survival !== undefined &&
-    skills.thievery !== undefined
-  );
-};
+import {
+  GalzyrCardV2,
+  GalzyrCharacterNames,
+  GalzyrCharacterSkills,
+} from '../../types/galzyr-game.type';
+import { isGalzyrCharacterSkills } from '../../helpers/galzyr-save-helpers';
 
 @Component({
   selector: 'app-galzyr-character',
@@ -139,12 +81,12 @@ export class GalzyrCharacterComponent implements OnInit, OnDestroy {
       money: this.#fb.control(10),
       stats: this.#fb.control<GalzyrCharacterSkills>(
         {
-          [Skills.COMMUNICATION]: 0,
-          [Skills.KNOWLEDGE]: 0,
-          [Skills.MIGHT]: 0,
-          [Skills.PERCEPTION]: 0,
-          [Skills.SURVIVAL]: 0,
-          [Skills.THIEVERY]: 0,
+          communication: 0,
+          knowledge: 0,
+          might: 0,
+          perception: 0,
+          survival: 0,
+          thievery: 0,
         },
         this.statsValidator
       ),

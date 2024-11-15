@@ -6,34 +6,33 @@ import {
 } from '../../core/services/indexed-db.service';
 import { from, Observable } from 'rxjs';
 import { GameSaveService } from '../../shared/abstract/game-save';
+import { GalzyrGameSave } from '../types/galzyr-game.type';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GalzyrSaveService implements GameSaveService<Object & GameSave> {
+export class GalzyrSaveService implements GameSaveService<GalzyrGameSave> {
   #DBService = inject(IDBService);
 
   getSaveList(): Observable<GameSave[]> {
     return from(this.#DBService.readList<GameSave>(BGH_DB_STORE.Galzyr));
   }
 
-  getGames(): Observable<(Object & GameSave)[]> {
+  getGames(): Observable<GalzyrGameSave[]> {
+    return from(this.#DBService.readAll<GalzyrGameSave>(BGH_DB_STORE.Galzyr));
+  }
+
+  getSave(slug: string): Observable<GalzyrGameSave> {
     return from(
-      this.#DBService.readAll<Object & GameSave>(BGH_DB_STORE.Galzyr)
+      this.#DBService.read<GalzyrGameSave>(BGH_DB_STORE.Galzyr, slug)
     );
   }
 
-  getSave(slug: string): Observable<Object & GameSave> {
-    return from(
-      this.#DBService.read<Object & GameSave>(BGH_DB_STORE.Galzyr, slug)
-    );
-  }
-
-  createSave(item: Object & GameSave): Observable<boolean> {
+  createSave(item: GalzyrGameSave): Observable<boolean> {
     return from(this.#DBService.create(BGH_DB_STORE.Galzyr, item));
   }
 
-  updateSave(item: Object & GameSave): Observable<boolean> {
+  updateSave(item: GalzyrGameSave): Observable<boolean> {
     return from(this.#DBService.update(BGH_DB_STORE.Galzyr, item));
   }
 

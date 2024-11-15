@@ -14,12 +14,9 @@ import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {
-  GalzyrCardComponent,
-  GalzyrCardV2,
-} from '../galzyr-card/galzyr-card.component';
-
-const defaultCard: GalzyrCardV2 = { cardNo: '000', name: 'Card', notes: '' };
+import { GalzyrCardV2 } from '../../types/galzyr-game.type';
+import { GalzyrCardComponent } from '../galzyr-card/galzyr-card.component';
+import { defaultCard } from '../../helpers/galzyr-save-helpers';
 
 @Component({
   selector: 'app-galzyr-slot',
@@ -59,7 +56,7 @@ export class GalzyrSlotComponent implements OnInit, OnDestroy {
   }
 
   addCard(): void {
-    this.slotArray?.push(this.#fb.control<GalzyrCardV2>(defaultCard));
+    this.slotArray?.push(this.#fb.control<GalzyrCardV2>(defaultCard()));
   }
   removeCard(cardIndex: number): void {
     this.slotArray?.removeAt(cardIndex);
