@@ -1,4 +1,10 @@
-import { computed, inject, InjectionToken, ProviderToken } from '@angular/core';
+import {
+  afterNextRender,
+  computed,
+  inject,
+  InjectionToken,
+  ProviderToken,
+} from '@angular/core';
 import {
   patchState,
   signalStore,
@@ -245,7 +251,11 @@ export const gameStoreFactory = <T extends GameSave>() => {
     })),
     withHooks({
       onInit: (store) => {
-        store.loadList();
+        afterNextRender({
+          read: () => {
+            store.loadList();
+          },
+        });
       },
     })
   );

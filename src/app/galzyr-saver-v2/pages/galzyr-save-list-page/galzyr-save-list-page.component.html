@@ -1,5 +1,33 @@
-<button (click)="addDummyCharacter()">Add dummy character</button>
+<button (click)="openNewSaveDialog(dialog)">New save</button>
 
-@for (save of store.gameEntities(); track $index) {
-<a [routerLink]="['./', 'save', save.slug]"> {{ save.name }}</a>
-}
+<hr />
+
+<ul>
+  @for (save of store.gameEntities(); track $index) {
+  <li>
+    <a [routerLink]="['./', 'save', save.slug]"> {{ save.name }}</a>
+  </li>
+  }
+</ul>
+
+<dialog #dialog>
+  <form [formGroup]="addSaveForm">
+    <fieldset>
+      <legend>Create new Galzyr Game</legend>
+
+      <label for="name">Game name</label>
+      <input
+        type="text"
+        id="name"
+        [formControl]="addSaveForm.controls.name"
+        autofocus
+      />
+
+      <label for="slug">Game id</label>
+      <input type="text" id="slug" [formControl]="addSaveForm.controls.slug" />
+
+      <button (click)="handleDialogClose(dialog, true)">Cancel</button>
+      <button (click)="handleDialogClose(dialog)">Create</button>
+    </fieldset>
+  </form>
+</dialog>
