@@ -248,6 +248,9 @@ export const gameStoreFactory = <T extends GameSave>() => {
         patchState(store, { selectedGameId: slug });
         return store.selectedGame;
       },
+      checkSlugValidity: (slug: string) => {
+        return !store.gameIds().includes(slug);
+      },
     })),
     withHooks({
       onInit: (store) => {

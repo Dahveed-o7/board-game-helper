@@ -27,7 +27,12 @@
       <input type="text" id="slug" [formControl]="addSaveForm.controls.slug" />
 
       <button (click)="handleDialogClose(dialog, true)">Cancel</button>
-      <button (click)="handleDialogClose(dialog)">Create</button>
+      <button
+        (click)="handleDialogClose(dialog)"
+        [disabled]="addSaveForm.invalid"
+      >
+        Create
+      </button>
     </fieldset>
   </form>
 </dialog>
