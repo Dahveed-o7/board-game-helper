@@ -79,7 +79,6 @@ export function availableNameValidator(
 ): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const available = checkFn(control.value);
-    console.log('available ', available);
     return available ? null : { unavailableName: control.value };
   };
 }
