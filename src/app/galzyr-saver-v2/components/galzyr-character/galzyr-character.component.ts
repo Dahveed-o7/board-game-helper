@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import {
   ControlContainer,
+  FormArray,
   FormControl,
   FormGroup,
   isFormControl,
@@ -67,6 +68,7 @@ export class GalzyrCharacterComponent implements OnInit, OnDestroy {
     playerName: FormControl<string>;
     money: FormControl<number>;
     stats: FormControl<GalzyrCharacterSkills>;
+    cards: FormArray<FormControl<GalzyrCardV2>>;
   }>;
 
   //TODO: mindenhol isFormGroup fn használata
@@ -75,6 +77,12 @@ export class GalzyrCharacterComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.parentFormGroup.controls[this.controlKey()]) {
+      this.characterForm = this.parentFormGroup.controls[
+        this.controlKey()
+      ] as FormGroup;
+      return;
+    }
     this.characterForm = this.#fb.group({
       name: this.#fb.control<GalzyrCharacterNames | string>(this.name()),
       playerName: this.#fb.control(''),
@@ -90,6 +98,7 @@ export class GalzyrCharacterComponent implements OnInit, OnDestroy {
         },
         this.statsValidator
       ),
+      cards: this.#fb.array<GalzyrCardV2>([]),
     });
     this.parentFormGroup.addControl(this.controlKey(), this.characterForm);
   }

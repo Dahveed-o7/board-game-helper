@@ -33,6 +33,7 @@ export class GalzyrSaveService implements GameSaveService<GalzyrGameSave> {
   }
 
   updateSave(item: GalzyrGameSave): Observable<boolean> {
+    console.log('saving with data', item);
     return from(this.#DBService.update(BGH_DB_STORE.Galzyr, item));
   }
 

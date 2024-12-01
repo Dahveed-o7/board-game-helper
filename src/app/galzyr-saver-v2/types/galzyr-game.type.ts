@@ -1,10 +1,12 @@
 export type GalzyrGameSave = {
   name: string;
   slug: string;
-  quests: GalzyrCardV2[];
-  events: GalzyrCardV2[];
-  vault: GalzyrCardV2[];
-  world: GalzyrCardV2[];
+  slots: {
+    quests: GalzyrCardV2[];
+    events: GalzyrCardV2[];
+    vault: GalzyrCardV2[];
+    world: GalzyrCardV2[];
+  };
   characters: {
     [character: string]: GalzyrCharacterSheetV2;
   };

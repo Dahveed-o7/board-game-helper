@@ -125,16 +125,16 @@ export function withNamedStatus<T extends string>(statusNames: T[]) {
   );
 }
 
-export type SelectedGameState = { selectedGameId: EntityId | null };
+export type SelectedGameState = { selectedGameId: EntityId | undefined };
 
 export function withSelectedGame<Game>() {
   return signalStoreFeature(
     { state: type<NamedEntityState<Game, 'game'>>() },
-    withState<SelectedGameState>({ selectedGameId: null }),
+    withState<SelectedGameState>({ selectedGameId: undefined }),
     withComputed(({ gameEntityMap, selectedGameId }) => ({
       selectedGame: computed(() => {
         const selectedId = selectedGameId();
-        return selectedId ? gameEntityMap()[selectedId] : null;
+        return selectedId ? gameEntityMap()[selectedId] : undefined;
       }),
     }))
   );
@@ -238,6 +238,15 @@ export const gameStoreFactory = <T extends GameSave>() => {
           )
         )
       ),
-    }))
+      loadSave: (slug: string) => {
+        patchState(store, { selectedGameId: slug });
+        return store.selectedGame;
+      },
+    })),
+    withHooks({
+      onInit: (store) => {
+        store.loadList();
+      },
+    })
   );
 };

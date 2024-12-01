@@ -17,13 +17,13 @@ export const galzyrSaverRoutes: Routes = [
           ).then((c) => c.GalzyrSaveListPageComponent),
       },
       {
-        path: 'save/new',
+        path: 'save/new/:slug',
         title: 'BGH Galzyr new save',
         loadComponent: () =>
           import(
             '../pages/galzyr-save-game-page/galzyr-save-game-page.component'
           ).then((c) => c.GalzyrSaveGamePageComponent),
-        data: { isCreate: true },
+        data: { isNewSave: true },
       },
       {
         path: 'save/:slug',
@@ -32,7 +32,7 @@ export const galzyrSaverRoutes: Routes = [
           import(
             '../pages/galzyr-save-game-page/galzyr-save-game-page.component'
           ).then((c) => c.GalzyrSaveGamePageComponent),
-        data: { isCreate: false },
+        data: { isNewSave: false },
       },
     ],
   },

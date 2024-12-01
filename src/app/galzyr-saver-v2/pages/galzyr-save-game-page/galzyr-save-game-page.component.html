@@ -1,1 +1,5 @@
-<p>galzyr-save-game-page works!</p>
+@if (gameSave(); as save) {
+<app-galzyr-save-form [data]="save" (autoSave)="autoSave($event)" />
+} @else {
+<!-- TODO: loader -->
+L O A D I N G . . . }

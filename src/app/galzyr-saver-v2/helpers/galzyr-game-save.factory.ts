@@ -15,10 +15,12 @@ export default function galzyrGameSaveFactory(
   return {
     name,
     slug: slug ?? encodeURIComponent(name),
-    events: generateCard({ from: 64, to: 89 }, 'Event'),
-    quests: generateCard({ from: 127, to: 148 }, 'Quest'),
-    vault: generateCard({ from: 296, to: 299 }, 'Vault'),
-    world: [generateCard('001', 'January')],
+    slots: {
+      events: generateCard({ from: 64, to: 89 }, 'Event'),
+      quests: generateCard({ from: 127, to: 148 }, 'Quest'),
+      vault: generateCard({ from: 296, to: 299 }, 'Vault'),
+      world: [generateCard('001', 'January')],
+    },
     characters,
   };
 }

@@ -1,4 +1,5 @@
 import { afterNextRender, Injectable } from '@angular/core';
+import { BehaviorSubject, filter, take } from 'rxjs';
 
 const DB_NAME = 'BGG_test';
 const DB_VERSION = 1;
@@ -21,34 +22,55 @@ export interface GameSave {
 })
 export class IDBService {
   #db!: IDBDatabase;
+  #indexedDb?: IDBFactory;
 
-  async #connect(): Promise<IDBDatabase> {
+  constructor() {
+    afterNextRender({
+      read: () => {
+        this.#indexedDb = indexedDB;
+      },
+    });
+  }
+
+  #connect(): Promise<IDBDatabase> {
     if (this.#db) {
-      return this.#db;
+      return Promise.resolve(this.#db);
     }
 
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-
     return new Promise<IDBDatabase>((resolve) => {
-      request.onsuccess = () => {
+      // TODO: more sophisticated error handling
+      try {
+        if (!this.#indexedDb) {
+          throw 'no IDB';
+        }
+      } catch (err) {
+        // this only runs at server side
+        return;
+      }
+
+      const request = this.#indexedDb.open(DB_NAME, DB_VERSION);
+
+      request.onupgradeneeded = (asd) => {
         this.#db = request.result;
-        resolve(this.#db);
-      };
-      request.onupgradeneeded = () => {
-        this.#db = request.result;
+        const transaction = request.transaction;
 
         const objectStore = this.#db.createObjectStore(DB_GALZYR_STORE, {
-          autoIncrement: true,
+          keyPath: 'slug',
         });
 
         objectStore.createIndex('Game slug', 'slug', { unique: true });
         objectStore.createIndex('Game name', 'name', { unique: false });
+      };
+
+      request.onsuccess = () => {
+        this.#db = request.result;
 
         resolve(this.#db);
       };
     });
   }
 
+  // TODO: handle promise rrejet here
   async #getObjectStore(
     storeName: string,
     mode?: IDBTransactionMode,
@@ -59,7 +81,7 @@ export class IDBService {
       .objectStore(storeName);
   }
 
-  create<T>(store: BGH_DB_STORE, item: T): Promise<boolean> {
+  create<T extends GameSave>(store: BGH_DB_STORE, item: T): Promise<boolean> {
     return new Promise<boolean>(async (resolve, _reject) => {
       const request = (await this.#getObjectStore(store, 'readwrite')).add(
         item
@@ -80,11 +102,13 @@ export class IDBService {
     });
   }
 
-  update<T>(store: BGH_DB_STORE, data: T): Promise<boolean> {
+  update<T extends GameSave>(store: BGH_DB_STORE, data: T): Promise<boolean> {
     return new Promise<boolean>(async (resolve, _reject) => {
       const request = (await this.#getObjectStore(store, 'readwrite')).put(
         data
       );
+
+      request.onerror = () => console.error('fuck');
 
       request.onsuccess = () => resolve(true);
     });
@@ -122,7 +146,7 @@ export class IDBService {
     });
   }
 
-  async readAll<T>(store: BGH_DB_STORE): Promise<T[]> {
+  async readAll<T extends GameSave>(store: BGH_DB_STORE): Promise<T[]> {
     return new Promise<T[]>(async (resolve) => {
       const request = (await this.#connect())
         .transaction(store, 'readonly')

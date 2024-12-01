@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   inject,
   input,
@@ -35,6 +36,7 @@ import { defaultCard } from '../../helpers/galzyr-save-helpers';
 export class GalzyrSlotComponent implements OnInit, OnDestroy {
   readonly #parentContainer = inject(ControlContainer);
   readonly #fb = inject(NonNullableFormBuilder);
+  readonly #cd = inject(ChangeDetectorRef);
 
   controlKey = input.required<string>();
   label = input.required<string>();
@@ -47,8 +49,15 @@ export class GalzyrSlotComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.slotArray = this.#fb.array<GalzyrCardV2>(this.initialCards());
-    this.parentFormGroup.addControl(this.controlKey(), this.slotArray);
+    if (this.parentFormGroup.controls[this.controlKey()]) {
+      this.slotArray = this.parentFormGroup.controls[
+        this.controlKey()
+      ] as FormArray;
+      return;
+    } else {
+      this.slotArray = this.#fb.array<GalzyrCardV2>(this.initialCards());
+      this.parentFormGroup.addControl(this.controlKey(), this.slotArray);
+    }
   }
 
   ngOnDestroy(): void {
@@ -57,8 +66,11 @@ export class GalzyrSlotComponent implements OnInit, OnDestroy {
 
   addCard(): void {
     this.slotArray?.push(this.#fb.control<GalzyrCardV2>(defaultCard()));
+    this.#cd.detectChanges();
   }
+
   removeCard(cardIndex: number): void {
     this.slotArray?.removeAt(cardIndex);
+    this.#cd.detectChanges();
   }
 }

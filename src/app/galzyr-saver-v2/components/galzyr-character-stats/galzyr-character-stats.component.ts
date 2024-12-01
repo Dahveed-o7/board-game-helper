@@ -4,7 +4,6 @@ import {
   forwardRef,
   inject,
   input,
-  Input,
   OnDestroy,
   OnInit,
   signal,
@@ -18,13 +17,13 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
+import { defaultSkills } from '../../helpers/galzyr-save-helpers';
 import {
   GalzyrCharacterSkillName,
   GalzyrCharacterSkills,
   GalzyrCharacterStat,
   Skills,
 } from '../../types/galzyr-game.type';
-import { defaultSkills } from '../../helpers/galzyr-save-helpers';
 
 @Component({
   selector: 'app-galzyr-character-stats',

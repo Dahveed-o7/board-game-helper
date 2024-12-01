@@ -1,0 +1,21 @@
+@if (saveForm) {
+<form [formGroup]="saveForm">
+  <fieldset id="slots" [formGroup]="saveForm.controls.slots">
+    <legend for="slots">Slots</legend>
+    @for (slot of slotOptions(); track $index) {
+    <app-galzyr-slot [controlKey]="slot.controlKey" [label]="slot.label" />
+    }
+  </fieldset>
+  <fieldset id="characters" [formGroup]="saveForm.controls.characters">
+    <legend for="characters"></legend>
+    @for (character of characterOptions(); track $index) {
+    <app-galzyr-character
+      [controlKey]="character.controlKey"
+      [name]="character.label"
+    />
+    }
+  </fieldset>
+</form>
+} @else {
+<!-- TODO: loading indicator comp -->
+Loading . . . }

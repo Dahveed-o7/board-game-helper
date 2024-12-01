@@ -1,1 +1,5 @@
-<p>galzyr-save-list-page works!</p>
+<button (click)="addDummyCharacter()">Add dummy character</button>
+
+@for (save of store.gameEntities(); track $index) {
+<a [routerLink]="['./', 'save', save.slug]"> {{ save.name }}</a>
+}
