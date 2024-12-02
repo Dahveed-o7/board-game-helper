@@ -1,17 +1,21 @@
-<button (click)="openNewSaveDialog(dialog)">New save</button>
+<button (click)="onNewSaveDialogOpen(createDialog)">New save</button>
 
 <hr />
 
 <ul>
   @for (save of store.gameEntities(); track $index) {
   <li>
-    <a [routerLink]="['./', 'save', save.slug]"> {{ save.name }}</a>
+    <a [routerLink]="['./', 'save', save.name]"> {{ save.name }}</a>
+    <button (click)="onDeleteDialogOpen(save.name, deletePopover)">X</button>
   </li>
   }
 </ul>
 
-<dialog #dialog>
-  <form [formGroup]="addSaveForm">
+<dialog #createDialog>
+  <form
+    [formGroup]="addSaveForm"
+    (ngSubmit)="onNewSaveDialogSubmit(createDialog)"
+  >
     <fieldset>
       <legend>Create new Galzyr Game</legend>
 
@@ -23,16 +27,14 @@
         autofocus
       />
 
-      <label for="slug">Game id</label>
-      <input type="text" id="slug" [formControl]="addSaveForm.controls.slug" />
-
-      <button (click)="handleDialogClose(dialog, true)">Cancel</button>
-      <button
-        (click)="handleDialogClose(dialog)"
-        [disabled]="addSaveForm.invalid"
-      >
-        Create
-      </button>
+      <button (click)="onNewSaveDialogCancel(createDialog)">Cancel</button>
+      <button type="submit" [disabled]="addSaveForm.invalid">Create</button>
     </fieldset>
   </form>
+</dialog>
+
+<dialog #deletePopover>
+  Are you sure you want to delete game
+  <button (click)="onDeleteDialogClose(deletePopover)">Cancel</button>
+  <button (click)="onDeleteDialogSubmit(deletePopover)">Delete</button>
 </dialog>

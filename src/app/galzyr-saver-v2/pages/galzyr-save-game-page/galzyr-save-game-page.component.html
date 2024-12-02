@@ -1,5 +1,5 @@
-@if (gameSave(); as save) {
-<app-galzyr-save-form [data]="save" (autoSave)="autoSave($event)" />
+@if (store.selectedGame(); as save) {
+<app-galzyr-save-form [data]="save" (autoSave)="store.saveGame($event)" />
 } @else {
 <!-- TODO: loader -->
 L O A D I N G . . . }

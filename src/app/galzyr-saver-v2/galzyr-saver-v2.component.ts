@@ -13,7 +13,7 @@ import { GalzyrGameSave } from './types/galzyr-game.type';
     GalzyrStore,
     { provide: GameSaveService<GalzyrGameSave>, useClass: GalzyrSaveService },
   ],
-  template: '<router-outlet></router-outlet>',
+  template: `<router-outlet />`,
   styles: `:host{
     display: block;
   }`,

@@ -1,17 +1,21 @@
 @if (saveForm) {
 <form [formGroup]="saveForm">
-  <fieldset id="slots" [formGroup]="saveForm.controls.slots">
+  <fieldset id="slots" formArrayName="slots">
     <legend for="slots">Slots</legend>
-    @for (slot of slotOptions(); track $index) {
-    <app-galzyr-slot [controlKey]="slot.controlKey" [label]="slot.label" />
+    @for (slot of saveForm.controls.slots.controls; track $index; let index =
+    $index) {
+    <div [formGroupName]="index">
+      <app-galzyr-slot controlKey="cards" [label]="slot.getRawValue().name" />
+    </div>
     }
   </fieldset>
-  <fieldset id="characters" [formGroup]="saveForm.controls.characters">
-    <legend for="characters"></legend>
-    @for (character of characterOptions(); track $index) {
+  <fieldset id="characters" formArrayName="characters">
+    <legend for="characters">Characters</legend>
+    @for (character of saveForm.controls.characters.controls; track $index; let
+    index = $index) {
     <app-galzyr-character
-      [controlKey]="character.controlKey"
-      [name]="character.label"
+      [controlKey]="index"
+      [name]="character.getRawValue().name"
     />
     }
   </fieldset>

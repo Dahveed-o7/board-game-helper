@@ -2,12 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  OnDestroy,
-  OnInit,
+  signal,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import galzyrGameSaveFactory from '../../helpers/galzyr-game-save.factory';
-import { GalzyrStore } from '../../store/galzyr-saver.store';
 import {
   AbstractControl,
   NonNullableFormBuilder,
@@ -16,7 +12,9 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { map, Subscription } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import galzyrGameSaveFactory from '../../helpers/galzyr-game-save.factory';
+import { GalzyrStore } from '../../store/galzyr-saver.store';
 
 @Component({
   selector: 'app-galzyr-save-list-page',
@@ -26,50 +24,53 @@ import { map, Subscription } from 'rxjs';
   styleUrl: './galzyr-save-list-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GalzyrSaveListPageComponent implements OnInit, OnDestroy {
+export class GalzyrSaveListPageComponent {
   readonly store = inject(GalzyrStore);
   readonly #fb = inject(NonNullableFormBuilder);
 
+  readonly selectedGame = signal('');
+
   addSaveForm = this.#fb.group({
-    name: this.#fb.control('', [Validators.minLength(2)]),
-    slug: this.#fb.control('', [
+    name: this.#fb.control('', [
       Validators.required,
-      availableNameValidator(this.store.checkSlugValidity),
+      Validators.minLength(2),
+      availableNameValidator(this.store.checkNameAvailable),
     ]),
   });
 
-  #createSaveSlugSub?: Subscription;
-
-  ngOnInit(): void {
-    this.#createSaveSlugSub = this.addSaveForm.controls.name.valueChanges
-      .pipe(map((val) => val.toLocaleLowerCase()))
-      .subscribe((val) => this.addSaveForm.controls.slug.setValue(val));
-  }
-
-  ngOnDestroy(): void {
-    this.#createSaveSlugSub?.unsubscribe();
-  }
-
-  addDummyCharacter(): void {
-    this.store.createSave(galzyrGameSaveFactory('test', 'test'));
-  }
-
-  openNewSaveDialog(dialog: HTMLDialogElement): void {
+  onNewSaveDialogOpen(dialog: HTMLDialogElement): void {
     dialog.showModal();
   }
 
-  handleDialogClose(dialog: HTMLDialogElement, cancel = false): void {
-    if (cancel) {
-      this.addSaveForm.reset();
+  onNewSaveDialogSubmit(dialog: HTMLDialogElement): void {
+    if (this.addSaveForm.invalid) {
       dialog.close();
       return;
     }
 
-    if (this.addSaveForm.valid) {
-      const { name, slug } = this.addSaveForm.getRawValue();
-      this.store.createSave(galzyrGameSaveFactory(name, slug));
-    }
+    const { name } = this.addSaveForm.getRawValue();
+    this.store.createSave(galzyrGameSaveFactory(name));
+    dialog.close();
+  }
 
+  onNewSaveDialogCancel(dialog: HTMLDialogElement): void {
+    this.addSaveForm.reset();
+    dialog.close();
+  }
+
+  onDeleteDialogOpen(name: string, dialog: HTMLDialogElement) {
+    this.selectedGame.set(name);
+    dialog.showModal();
+  }
+
+  onDeleteDialogClose(dialog: HTMLDialogElement) {
+    this.selectedGame.set('');
+    dialog.close();
+  }
+
+  onDeleteDialogSubmit(dialog: HTMLDialogElement) {
+    this.store.deleteSave(this.selectedGame());
+    this.selectedGame.set('');
     dialog.close();
   }
 }

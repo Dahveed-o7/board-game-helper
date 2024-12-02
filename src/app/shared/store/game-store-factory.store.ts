@@ -150,7 +150,7 @@ export const gameStoreFactory = <T extends GameSave>() => {
   const gameSaveConfig = entityConfig({
     entity: type<T>(),
     collection: 'game',
-    selectId: (game) => game.slug,
+    selectId: (game) => game.name,
   });
 
   return signalStore(
@@ -169,7 +169,7 @@ export const gameStoreFactory = <T extends GameSave>() => {
                     store,
                     addEntities(items, {
                       collection: 'game',
-                      selectId: (game) => game.slug,
+                      selectId: (entity) => entity.name,
                     })
                   ),
                 error: (err) => console.log(err),
@@ -192,7 +192,7 @@ export const gameStoreFactory = <T extends GameSave>() => {
                     store,
                     addEntity(game, {
                       collection: 'game',
-                      selectId: (entity) => entity.slug,
+                      selectId: (entity) => entity.name,
                     })
                   ),
                 error: (err) => console.log(err),
@@ -214,10 +214,10 @@ export const gameStoreFactory = <T extends GameSave>() => {
                   patchState(
                     store,
                     updateEntity(
-                      { changes: game, id: game.slug },
+                      { changes: game, id: game.name },
                       {
                         collection: 'game',
-                        selectId: (entity) => entity.slug,
+                        selectId: (entity) => entity.name,
                       }
                     )
                   ),
@@ -244,12 +244,11 @@ export const gameStoreFactory = <T extends GameSave>() => {
           )
         )
       ),
-      loadSave: (slug: string) => {
-        patchState(store, { selectedGameId: slug });
-        return store.selectedGame;
+      selectSave: (name: string) => {
+        patchState(store, { selectedGameId: name });
       },
-      checkSlugValidity: (slug: string) => {
-        return !store.gameIds().includes(slug);
+      checkNameAvailable: (name: string) => {
+        return !store.gameIds().includes(name);
       },
     })),
     withHooks({

@@ -14,7 +14,6 @@ export const DB_VAGRANTSONG_STORE = BGH_DB_STORE.Vagrantsong;
 
 export interface GameSave {
   readonly name: string;
-  readonly slug: string;
 }
 
 @Injectable({
@@ -50,16 +49,13 @@ export class IDBService {
 
       const request = this.#indexedDb.open(DB_NAME, DB_VERSION);
 
-      request.onupgradeneeded = (asd) => {
+      request.onupgradeneeded = () => {
         this.#db = request.result;
-        const transaction = request.transaction;
-
         const objectStore = this.#db.createObjectStore(DB_GALZYR_STORE, {
-          keyPath: 'slug',
+          keyPath: 'name',
         });
 
-        objectStore.createIndex('Game slug', 'slug', { unique: true });
-        objectStore.createIndex('Game name', 'name', { unique: false });
+        objectStore.createIndex('Game name', 'name', { unique: true });
       };
 
       request.onsuccess = () => {

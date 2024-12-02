@@ -47,7 +47,7 @@ export class GalzyrCharacterComponent implements OnInit, OnDestroy {
   readonly #parentContainer = inject(ControlContainer);
   readonly #fb = inject(NonNullableFormBuilder);
 
-  controlKey = input.required<string>();
+  controlKey = input.required<number>();
   name = input.required<string>();
   initialCards = input<GalzyrCardV2[]>([]);
 
@@ -72,8 +72,8 @@ export class GalzyrCharacterComponent implements OnInit, OnDestroy {
   }>;
 
   //TODO: mindenhol isFormGroup fn használata
-  get parentFormGroup(): FormGroup {
-    return this.#parentContainer.control as FormGroup;
+  get parentFormGroup(): FormArray {
+    return this.#parentContainer.control as FormArray;
   }
 
   ngOnInit(): void {
@@ -81,8 +81,10 @@ export class GalzyrCharacterComponent implements OnInit, OnDestroy {
       this.characterForm = this.parentFormGroup.controls[
         this.controlKey()
       ] as FormGroup;
+      this.characterForm.controls.stats.addValidators(this.statsValidator);
       return;
     }
+    // TODO: kelle létrehozni ha nincs adat? mert amúgy úgyis belegenerálom az egészet
     this.characterForm = this.#fb.group({
       name: this.#fb.control<GalzyrCharacterNames | string>(this.name()),
       playerName: this.#fb.control(''),
@@ -100,10 +102,10 @@ export class GalzyrCharacterComponent implements OnInit, OnDestroy {
       ),
       cards: this.#fb.array<GalzyrCardV2>([]),
     });
-    this.parentFormGroup.addControl(this.controlKey(), this.characterForm);
+    this.parentFormGroup.push(this.characterForm);
   }
 
   ngOnDestroy(): void {
-    this.parentFormGroup.removeControl(this.controlKey());
+    if (this.parentFormGroup) this.parentFormGroup.removeAt(this.controlKey());
   }
 }
