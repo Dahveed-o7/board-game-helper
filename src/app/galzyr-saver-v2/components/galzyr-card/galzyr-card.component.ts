@@ -1,9 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  HostBinding,
   inject,
+  input,
   OnDestroy,
   OnInit,
+  output,
   signal,
 } from '@angular/core';
 import {
@@ -35,6 +38,14 @@ export class GalzyrCardComponent
   implements ControlValueAccessor, OnInit, OnDestroy
 {
   readonly #fb = inject(NonNullableFormBuilder);
+
+  @HostBinding('class.card') card = true;
+
+  readonly idPrefix = input<string>();
+  readonly delete = output<void>();
+
+  readonly disabled = signal<boolean>(false);
+
   readonly cardForm = this.#fb.group({
     name: this.#fb.control('Card name', Validators.required),
     cardNo: this.#fb.control('000', [
@@ -45,20 +56,7 @@ export class GalzyrCardComponent
     notes: this.#fb.control(''),
   });
 
-  cardValueChangesSubscription?: Subscription;
-
-  editeMode = signal<boolean>(true);
-  disabled = signal<boolean>(false);
-
-  get name() {
-    return this.cardForm.getRawValue().name;
-  }
-  get cardNo() {
-    return this.cardForm.getRawValue().cardNo;
-  }
-  get notes() {
-    return this.cardForm.getRawValue().notes;
-  }
+  #cardValueChangesSubscription?: Subscription;
 
   #onChange: (card: GalzyrCardV2) => void = () => {};
   #onTouched: () => void = () => {};
@@ -77,7 +75,7 @@ export class GalzyrCardComponent
   }
 
   ngOnInit(): void {
-    this.cardValueChangesSubscription = this.cardForm.valueChanges
+    this.#cardValueChangesSubscription = this.cardForm.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe(() => {
         const cardState = this.cardForm.getRawValue();
@@ -87,10 +85,10 @@ export class GalzyrCardComponent
   }
 
   ngOnDestroy(): void {
-    this.cardValueChangesSubscription?.unsubscribe();
+    this.#cardValueChangesSubscription?.unsubscribe();
   }
 
-  toggleEditMode(): void {
-    this.editeMode.set(!this.editeMode());
+  emitDelete(): void {
+    this.delete.emit();
   }
 }

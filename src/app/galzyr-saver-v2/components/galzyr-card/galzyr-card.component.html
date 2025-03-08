@@ -1,22 +1,37 @@
-@if (editeMode()) {
-<fieldset [formGroup]="cardForm" class="galzyr-card">
-  <label for="name"></label>
-  <input type="text" id="name" [formControl]="cardForm.controls.name" />
-
-  <label for="cardNo">Card Number</label>
-  <input type="number" id="cardNo" [formControl]="cardForm.controls.cardNo" />
-
-  <label for="notes">Notes</label>
-  <input type="text" id="notes" [formControl]="cardForm.controls.notes" />
-</fieldset>
-} @else {
-<section>
-  <header>
-    <h3>{{ name }}</h3>
-  </header>
-  <div class="galzyr-card-details">
-    <p>{{ notes }}</p>
-    <span>{{ cardNo }}</span>
+<fieldset [formGroup]="cardForm" class="form form--galzyr-card">
+  <div class="form-control form-control--card-name">
+    <label class="visually-hidden" for="name">Card name</label>
+    <input
+      type="text"
+      [id]="idPrefix() + '-name'"
+      [formControl]="cardForm.controls.name"
+    />
   </div>
-</section>
-}
+
+  <div class="form-control">
+    <label class="visually-hidden" for="cardNo">Card Number</label>
+    <input
+      type="string"
+      inputmode="numeric"
+      pattern="/d{4}"
+      [id]="idPrefix() + '-cardNo'"
+      [formControl]="cardForm.controls.cardNo"
+    />
+  </div>
+
+  <div class="form-control">
+    <label class="visually-hidden" for="notes">Notes</label>
+    <textarea
+      type="text"
+      rows="3"
+      [id]="idPrefix() + '-notes'"
+      placeholder="Note . . ."
+      [formControl]="cardForm.controls.notes"
+    ></textarea>
+  </div>
+  <div class="form-control">
+    <button type="button" class="btn btn--card-delete" (click)="emitDelete()">
+      X
+    </button>
+  </div>
+</fieldset>

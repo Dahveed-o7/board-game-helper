@@ -1,21 +1,43 @@
 :root {
   --primary: #e0c514;
   --on-primary: #000000;
+  --primary-container: #d86e00;
+  --on-primary-container: #000000;
 
-  --primary-variant: #d86e00;
-  --on-primary-variant: #000000;
+  --primary-fixed: brown;
+  --primary-fixed-dim: orange;
+  --on-primary-fixed: white;
+  --on-primary-fixed-variant: wheat;
 
   --secondary: #d12e2b;
   --on-secondary: #ffffff;
+  --secondary-container: #b51a18;
+  --on-secondary-container: #ffffff;
 
-  --secondary-variant: #b51a18;
-  --on-secondary-variant: #ffffff;
+  --card: #efcb87;
+  --on-card: black;
+  --card-container: wheat;
+  --on-card-container: black;
 
   --error: #dd1512;
   --on-error: #ffffff;
+  --error-container: red;
+  --pm-error-container: white;
 
-  --background: #ffffff;
-  --on-background: #000000;
+  --surface-dim: grey;
+  --surface: white;
+  --surface-bright: white;
+
+  --surface-container-lowest: white;
+  --surface-container-low: white;
+  --surface-container: white;
+  --surface-container-high: white;
+  --surface-container-highest: white;
+
+  --on-surface: black;
+  --on-surface-variant: darkgrey;
+  --outline: grey;
+  --outline-variant: darkgrey;
 
   --surface: #ffffff;
   --on-surface: #000000;

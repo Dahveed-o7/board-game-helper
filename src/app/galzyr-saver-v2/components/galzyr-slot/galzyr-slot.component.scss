@@ -1,3 +1,23 @@
 :host {
   display: block;
+  --card-size: 120px;
+  --card-height: 84px;
+}
+
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, var(--card-size));
+  grid-auto-rows: minmax(var(--card-height), 100%);
+  gap: 8px;
+}
+
+.add-button-container {
+  position: relative;
+
+  > .btn--add-card {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
 }

@@ -66,6 +66,7 @@ export class GalzyrSlotComponent implements OnInit, OnDestroy {
   addCard(): void {
     this.slotArray?.push(this.#fb.control<GalzyrCardV2>(defaultCard()));
   }
+
   removeCard(cardIndex: number): void {
     this.slotArray?.removeAt(cardIndex);
   }

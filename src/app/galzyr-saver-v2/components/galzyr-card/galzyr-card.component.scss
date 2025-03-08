@@ -1,3 +1,50 @@
 :host {
   display: block;
+
+  --width: 120px;
+  --border: 2px;
+  --padding: 4px;
+
+  &.card {
+    --_width: var(--width, 150px);
+    --_border: var(--border, 4px);
+    --_padding: var(--padding, 8px);
+
+    width: var(--_width);
+    border-radius: var(--_border);
+    padding: var(--_padding);
+
+    background-color: var(--card-container);
+  }
+}
+
+.visually-hidden {
+  display: none;
+}
+
+.form {
+  --_col-template: var(--template-columns, repeat(2, 1fr));
+  --_gap: var(--gap, 4px);
+
+  display: grid;
+  grid-template-columns: var(--_col-template);
+  gap: var(--_gap);
+}
+
+.form--galzyr-card {
+  --template-columns: 1fr 4ch;
+  --gap: 4px;
+}
+
+.form-control {
+  --_col: var(--col, auto);
+
+  display: grid;
+  align-items: center;
+  gap: 4px;
+  grid-column: var(--_col);
+
+  & input {
+    width: 100%;
+  }
 }

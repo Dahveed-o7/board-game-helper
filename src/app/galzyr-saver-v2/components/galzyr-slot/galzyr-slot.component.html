@@ -1,17 +1,25 @@
 <fieldset [formGroupName]="controlKey()">
   <legend>{{ label() }}</legend>
-  <button type="button" title="Add card" (click)="addCard()">+</button>
-  <ol class="card-container">
+  <ol class="card-list">
     @for (cardControl of slotArray?.controls; track cardControl.value; let index
     = $index) {
     <li>
-      <app-galzyr-card [formControl]="cardControl" #card />
-      @if (card.editeMode()) {
-      <button type="button" title="Remove card" (click)="removeCard(index)">
-        X
-      </button>
-      }
+      <app-galzyr-card
+        [formControl]="cardControl"
+        (delete)="removeCard(index)"
+        [idPrefix]="controlKey() + label() + index"
+      />
     </li>
     }
+    <li class="add-button-container">
+      <button
+        type="button"
+        class="btn btn--add-card"
+        title="Add card"
+        (click)="addCard()"
+      >
+        +
+      </button>
+    </li>
   </ol>
 </fieldset>
