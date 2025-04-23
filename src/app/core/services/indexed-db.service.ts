@@ -66,7 +66,7 @@ export class IDBService {
     });
   }
 
-  // TODO: handle promise rrejet here
+  // TODO: handle promise rejet here
   async #getObjectStore(
     storeName: string,
     mode?: IDBTransactionMode,
@@ -80,7 +80,8 @@ export class IDBService {
   create<T extends GameSave>(store: BGH_DB_STORE, item: T): Promise<boolean> {
     return new Promise<boolean>(async (resolve, _reject) => {
       const request = (await this.#getObjectStore(store, 'readwrite')).add(
-        item
+        item,
+        item.name
       );
 
       request.onsuccess = () => resolve(true);
@@ -101,7 +102,8 @@ export class IDBService {
   update<T extends GameSave>(store: BGH_DB_STORE, data: T): Promise<boolean> {
     return new Promise<boolean>(async (resolve, _reject) => {
       const request = (await this.#getObjectStore(store, 'readwrite')).put(
-        data
+        data,
+        data.name
       );
 
       request.onerror = () => console.error('fuck');

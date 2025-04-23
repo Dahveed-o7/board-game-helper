@@ -78,6 +78,7 @@ export function withNamedStatus<T extends string>(statusNames: T[]) {
         });
       },
       setLoading(statusName: T) {
+        console.log(statusName, 'loading');
         patchState(
           store,
           updateEntity(
@@ -87,6 +88,7 @@ export function withNamedStatus<T extends string>(statusNames: T[]) {
         );
       },
       setLoaded(statusName: T) {
+        console.log(statusName, 'loaded');
         patchState(
           store,
           updateEntity(
@@ -96,6 +98,7 @@ export function withNamedStatus<T extends string>(statusNames: T[]) {
         );
       },
       setError(statusName: T, error: string) {
+        console.log(statusName, 'error');
         patchState(
           store,
           updateEntity(
@@ -156,16 +159,19 @@ export const gameStoreFactory = <T extends GameSave>() => {
         pipe(
           tap(() => store.setLoading('games')),
           switchMap(() =>
-            saveService.getGames().pipe(
+            saveService.findAll().pipe(
+              tap((a) => console.log('items from BE:', a)),
               tapResponse({
-                next: (items) =>
+                next: (items) => {
+                  console.log(items);
                   patchState(
                     store,
                     addEntities(items, {
                       collection: 'game',
                       selectId: (entity) => entity.name,
                     })
-                  ),
+                  );
+                },
                 error: (err) => console.log(err),
                 finalize: () => store.setLoaded('games'),
               })
@@ -179,7 +185,7 @@ export const gameStoreFactory = <T extends GameSave>() => {
           distinctUntilChanged(),
           tap(() => store.setLoading('create')),
           switchMap((game) => {
-            return saveService.createSave(game).pipe(
+            return saveService.create(game).pipe(
               tapResponse({
                 next: (_res) =>
                   patchState(
@@ -202,7 +208,7 @@ export const gameStoreFactory = <T extends GameSave>() => {
           distinctUntilChanged(),
           tap(() => store.setLoading('save')),
           switchMap((game) =>
-            saveService.updateSave(game).pipe(
+            saveService.update(game).pipe(
               tapResponse({
                 next: (_res) =>
                   patchState(
@@ -227,7 +233,7 @@ export const gameStoreFactory = <T extends GameSave>() => {
           debounceTime(300),
           tap(() => store.setLoading('delete')),
           switchMap((key) =>
-            saveService.deleteSave(key).pipe(
+            saveService.remove(key).pipe(
               tapResponse({
                 next: (_res) =>
                   patchState(store, removeEntity(key, { collection: 'game' })),

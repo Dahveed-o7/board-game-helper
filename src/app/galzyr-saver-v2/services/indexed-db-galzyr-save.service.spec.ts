@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-
-import { GalzyrSaveService } from './galzyr-save.service';
+import { IndexedDbGalzyrSaveService } from './indexed-db-galzyr-save.service';
 
 describe('GalzyrSaveService', () => {
-  let service: GalzyrSaveService;
+  let service: IndexedDbGalzyrSaveService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(GalzyrSaveService);
+    service = TestBed.inject(IndexedDbGalzyrSaveService);
   });
 
   it('should be created', () => {
