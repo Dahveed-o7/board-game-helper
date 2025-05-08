@@ -71,7 +71,6 @@ export class GalzyrCharacterComponent implements OnInit, OnDestroy {
     cards: FormArray<FormControl<GalzyrCardV2>>;
   }>;
 
-  //TODO: mindenhol isFormGroup fn használata
   get parentFormGroup(): FormArray {
     return this.#parentContainer.control as FormArray;
   }
@@ -84,7 +83,6 @@ export class GalzyrCharacterComponent implements OnInit, OnDestroy {
       this.characterForm.controls.stats.addValidators(this.statsValidator);
       return;
     }
-    // TODO: kelle létrehozni ha nincs adat? mert amúgy úgyis belegenerálom az egészet
     this.characterForm = this.#fb.group({
       name: this.#fb.control<GalzyrCharacterNames | string>(this.name()),
       playerName: this.#fb.control(''),
